@@ -1,22 +1,30 @@
-import React from 'react';
+import React, { Component } from 'react';
 import classes from './Modal.css';
 import BackDrop from '../Backdrop/BackDrop';
 
-const Modal = (props)=> {
-    return(
-        <>
-            <BackDrop clicked={props.modalClosed} purchasing={props.show} />
-            <div className={classes.Modal}
-                style={{
-                    transform: props.show?"translateY(0)": "translateY(-100vh)"
-                }}
-            
-            >
-                {props.children}
+class Modal extends Component{
 
-            </div>
-        </>
-    )
+    shouldComponentUpdate(nextProps, nextState){
+        return nextProps.show!==this.props.show || nextProps.loading!==this.props.loading;
+    }
+
+    render(){
+        return(
+            <>
+                <BackDrop clicked={this.props.modalClosed} purchasing={this.props.show} />
+                <div className={classes.Modal}
+                    style={{
+                        transform: this.props.show?"translateY(0)": "translateY(-100vh)"
+                    }}
+                
+                >
+                    {this.props.children}
+    
+                </div>
+            </>
+        )
+    }
+
 }
 
 export default Modal;
