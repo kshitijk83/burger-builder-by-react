@@ -10,13 +10,6 @@ import { connect } from 'react-redux';
 import * as actionTypes from '../../store/action';
 
 
-const INGREDIENTS_PRICE = {
-    cheese: 40,
-    meat: 100,
-    salad: 20,
-    bacon:120
-}
-
 class burgerbuilder extends Component{
     // constructor(props){
     //     super(props);
@@ -47,44 +40,8 @@ class burgerbuilder extends Component{
             .reduce((acc, nextValue)=>{
                 return acc+nextValue;
             }, 0)
-        const purchasable = total>0;
-        this.setState({purchasable: purchasable});
+        return total>0;
 
-    }
-
-    removeIngredientHandler = (type)=>{
-        const oldCount = this.state.ingredients[type];
-        if(oldCount<=0){
-            return;
-        }
-        const updatedCount = oldCount-1;
-        const updatedIngredients = {
-            ...this.state.ingredients
-        }
-        // console.log(type);
-        updatedIngredients[type] = updatedCount;
-        const priceDeduction = INGREDIENTS_PRICE[type];
-        const oldPrice = this.state.total_price;
-        const newPrice = oldPrice - priceDeduction;
-        this.setState({total_price: newPrice, ingredients: updatedIngredients });
-        this.updatePurchasable(updatedIngredients);
-    }
-    addIngredientHandler = (type) => {
-        const oldCount = this.state.ingredients[type];
-        const updatedCount = oldCount + 1;
-        const updatedIngredients = {
-            ...this.state.ingredients
-        }
-        // console.log(type);
-        updatedIngredients[type] = updatedCount;
-        const priceAddition = INGREDIENTS_PRICE[type];
-        const oldPrice = this.state.total_price;
-        const newPrice = oldPrice + priceAddition;
-        this.setState({
-            total_price: newPrice,
-            ingredients: updatedIngredients
-        });
-        this.updatePurchasable(updatedIngredients);
     }
 
     purchasingHandler=()=>{
@@ -131,7 +88,7 @@ class burgerbuilder extends Component{
                     addIngredient={this.props.addIngHandler}
                     removeIngredient={this.props.removeIngHandler}
                     disabledInfo={disabledInfo}
-                    purchasable={this.state.purchasable} />
+                    purchasable={this.updatePurchasable(this.props.ings)} />
                 </>
             )
             orderSummary = <OrderSummary
