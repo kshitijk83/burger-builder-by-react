@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import CheckoutSummary from '../../Components/Order/CheckoutSummary/CheckoutSummary';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import ContactData from './ContactData/ContactData';
 import { connect } from 'react-redux';
+
 
 class checkout extends Component{
 
@@ -29,17 +30,21 @@ class checkout extends Component{
     }
 
     render(){
-        // console.log(this.props);
-        return(
-            <div>
-                <CheckoutSummary
-                 checkoutCancelled={this.checkoutCancelHandler}
-                 checkoutContinued={this.checkoutContinueHandler}
-                 ingredients={this.props.ingredients} />
-                 <Route path={this.props.match.url+'/contact-data'}
-                 component={ContactData} />
-            </div>  
-        )
+        let summary = <Redirect to="/" />;
+
+        if(this.props.ingredients){
+            summary =(
+                <div>
+                    <CheckoutSummary
+                    checkoutCancelled={this.checkoutCancelHandler}
+                    checkoutContinued={this.checkoutContinueHandler}
+                    ingredients={this.props.ingredients} />
+                    <Route path={this.props.match.url+'/contact-data'}
+                    component={ContactData} />
+                </div>
+            )
+        }
+        return summary;
     }    
 }
 
