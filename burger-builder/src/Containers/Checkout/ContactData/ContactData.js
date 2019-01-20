@@ -6,6 +6,7 @@ import Input from '../../../UI/Input/Input';
 import { connect } from 'react-redux';
 import * as orderActions from '../../../store/actions/index';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
+import Axios from 'axios';
 
 class ContactData extends Component{
     state={
@@ -104,7 +105,7 @@ class ContactData extends Component{
             price: this.props.tp,
             orderData: formData
         }
-        this.props.purchaseHandler(order);
+        this.props.orderHand(order);
     }
 
     checkValidity=(value ,rules)=>{
@@ -193,9 +194,9 @@ class ContactData extends Component{
 
 const mapStateToProps = state=>{
     return{
-        ingredients: state.ingredients,
-        tp: state.total_price,
-        loading: state.loading
+        ingredients: state.burgerBuilder.ingredients,
+        tp: state.burgerBuilder.total_price,
+        loading: state.order.loading
     }
 }
 
@@ -205,4 +206,4 @@ const dispatchToProps = dispatch=>{
     }
 }
 
-export default connect(mapStateToProps, dispatchToProps)(withErrorHandler(ContactData));
+export default connect(mapStateToProps, dispatchToProps)(withErrorHandler(ContactData, Axios));

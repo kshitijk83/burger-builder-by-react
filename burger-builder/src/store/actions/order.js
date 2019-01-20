@@ -30,7 +30,7 @@ export const purchaseHandler = (orderData)=>{
                 // this.setState({ loading:false })
                 // this.props.history.push('/');
                 console.log(res.data);
-                dispatch(purchaseBurgerSuccess(res.data, orderData));
+                dispatch(purchaseBurgerSuccess(res.data.name, orderData));
             })
             .catch(err=> {
                 // this.setState({ loading:false })
