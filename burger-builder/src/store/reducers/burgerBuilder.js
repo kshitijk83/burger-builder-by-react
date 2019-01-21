@@ -1,8 +1,9 @@
 import * as actionTypes from '../actions/actionTypes';
+import { updateObject } from '../utility';
 
 const intialState = {
     ingredients:null,
-    total_price: 40,
+    total_price: 0,
     error: false
 }
 
@@ -16,40 +17,39 @@ const INGREDIENTS_PRICE = {
 const reducer = (state=intialState, action)=>{
     switch (action.type) {
         case actionTypes.ADD_INGREDIENTS:
-            return{
-                ...state,
+            let obje = updateObject(state, {
                 ingredients: {
                     ...state.ingredients,
                     [action.ingredient]: state.ingredients[action.ingredient]+1
                 },
                 total_price: state.total_price + INGREDIENTS_PRICE[action.ingredient]
-            }
+            })
+            return obje;
         
         case actionTypes.REMOVE_INGREDIENTS:
-            return{
-                ...state,
+            obje = updateObject(state, {
                 ingredients: {
                     ...state.ingredients,
                     [action.ingredient]: state.ingredients[action.ingredient]-1
                 },
-                total_price: state.total_price - INGREDIENTS_PRICE[action.ingredient]
-            }
+                total_price: state.total_price + INGREDIENTS_PRICE[action.ingredient]
+            })
+            return obje;
         case actionTypes.SET_INGREDIENTS:
-            return{
-                ...state,
+            obje = updateObject(state, {
                 ingredients: {
                     salad: action.ingredients.salad,
                     bacon: action.ingredients.bacon,
                     cheese: action.ingredients.cheese,
                     meat: action.ingredients.meat
                 },
+                total_price: 0,
                 error: false
-            }
+            })
+            return obje;
         case actionTypes.SET_INGREDIENTS_FAILED:
-            return{
-                ...state,
-                error: true
-            }
+            obje = updateObject(state, {error: true})
+            return obje;
     
         default:
             return state;

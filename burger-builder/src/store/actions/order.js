@@ -38,3 +38,51 @@ export const purchaseHandler = (orderData)=>{
             });
     }
 }
+
+export const purchaseInit = ()=>{
+    return{
+        type: actionTypes.PURCHASE_INIT
+    }
+}
+
+export const fetchStart = ()=>{
+    return {
+        type: actionTypes.FETCH_START
+    }
+}
+
+export const fetchSuccess = (orders)=>{
+    return{
+        type: actionTypes.FETCH_SUCCESS,
+        orders: orders
+    }
+}
+
+export const fetchFail= ()=>{
+    return{
+        type: actionTypes.FETCH_FAIL,
+    }
+}
+
+export const orderFetch = ()=>{
+    return dispatch=>{
+        dispatch(fetchStart());
+        Axios.get('/orders.json')
+            .then(res=>{
+                const fetchedOrders=[];
+                for(let key in res.data){
+                    fetchedOrders.push({
+                        ...res.data[key],
+                        id: key
+                    })
+                }
+                console.log(fetchedOrders);
+                dispatch(fetchSuccess(fetchedOrders));
+                // this.setState({ fetchedOrders: fetchedOrders, loading: false })
+            })
+            .catch(err=>{
+                // this.setState({ loading: false })
+                dispatch(fetchFail())
+            })
+    }
+}
