@@ -3,7 +3,9 @@ import Input from '../../UI/Input/Input';
 import Button from '../../UI/Button/Button';
 import classes from './Auth.css';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import * as actions from '../../store/actions/index';
+import Spinner from '../../UI/Spinner/Spinner';
 
 class Auth extends Component{
     state = {
@@ -81,6 +83,12 @@ class Auth extends Component{
         })
     }
 
+    componentDidMount(){
+        if(!this.props.buildingBurger&&this.props.authRedirect!=='/'){
+            this.props.onRedirectPath();
+        }
+    }
+
     render(){
         const formElements = [];
         for(let key in this.state.controls){
@@ -102,8 +110,20 @@ class Auth extends Component{
                 changed={(event)=>this.onChangeHandler(event, formElement.id)}
                 />
         ))
+
+        if(this.props.loading){
+            form = <Spinner />;
+        }
+
+        let authRedirect = null;
+        if(this.props.isAuth){
+            authRedirect = <Redirect to={this.props.authRedirectPath} />
+        }
+
         return(
             <div className={classes.Auth}>
+                {authRedirect}
+                {this.props.error}
                 <form onSubmit={this.authHandler}>
                     {form}
                     <Button btnType="Success">Login</Button>
@@ -116,10 +136,21 @@ class Auth extends Component{
     }
 }
 
-const mapDispatchToProps=dispatch=>{
+const mapStateToProps = state=>{
     return{
-        onAuth: (email, password, method)=>dispatch(actions.auth(email, password, method))
+        loading: state.auth.loading,
+        error: state.auth.error,
+        isAuth: state.auth.token!==null,
+        authRedirectPath: state.auth.authRedirect,
+        buildingBurger: state.burgerBuilder.building
     }
 }
 
-export default connect(null, mapDispatchToProps)(Auth);
+const mapDispatchToProps=dispatch=>{
+    return{
+        onAuth: (email, password, method)=>dispatch(actions.auth(email, password, method)),
+        onRedirectPath: ()=>dispatch(actions.authRedirect('/'))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);

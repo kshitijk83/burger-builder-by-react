@@ -11,10 +11,6 @@ import * as burgerBuilderActions from '../../store/actions/index';
 
 
 class burgerbuilder extends Component{
-    // constructor(props){
-    //     super(props);
-    //     this.state={};
-    // }
     state={
         purchasable: false,
         purchasing: false,
@@ -39,7 +35,12 @@ class burgerbuilder extends Component{
     }
 
     purchasingHandler=()=>{
-        this.setState({purchasing: true});
+        if(this.props.isAuth){
+            this.setState({purchasing: true});
+        } else{
+            this.props.onRedirectHandler('/checkout')
+            this.props.history.push('/auth');
+        }
     }
 
     backdropHandler=()=>{
@@ -47,24 +48,14 @@ class burgerbuilder extends Component{
     }
 
     continueHandler=()=>{
-        // alert('Thanks for purchasing');
-        
-        // const query = [];
-        // for(let i in this.state.ingredients){
-        //     query.push(encodeURIComponent(i)+'='+encodeURIComponent(this.state.ingredients[i]));
-        // }
-        // query.push(encodeURI('price')+'='+encodeURIComponent(this.state.total_price));
-        // const queryString = query.join('&');
         
         this.props.purchaseInitHandler();
         this.props.history.push({
             pathname: '/checkout'
-            // search: queryString
         });
     }
 
     render(){
-        // console.log(this.props);
         const disabledInfo ={
             ...this.props.ings
         }
@@ -78,6 +69,7 @@ class burgerbuilder extends Component{
                 <>
                     <Burger ingredients={this.props.ings}/>
                     <BuildControls
+                    isAuth={this.props.isAuth}
                     price={this.props.tp}
                     purchasing={this.purchasingHandler}
                     addIngredient={this.props.addIngHandler}
@@ -113,6 +105,9 @@ const mapStateToProps = state=>{
         ings: state.burgerBuilder.ingredients,
         tp: state.burgerBuilder.total_price,
         error: state.burgerBuilder.error,
+        isAuth: state.auth.token!==null,
+        buildingBurger: state.burgerBuilder.building,
+        authRedirectPath: state.auth.authRedirect
     }
 }
 
@@ -121,7 +116,8 @@ const dispatchStateToprops=dispatch=>{
         addIngHandler: (ingName)=>dispatch(burgerBuilderActions.addIngredient(ingName)),
         removeIngHandler: (ingName)=>dispatch(burgerBuilderActions.removeIngredient(ingName)),
         fetchIngHandler: ()=>dispatch(burgerBuilderActions.fetchIngredients()),
-        purchaseInitHandler: ()=>{dispatch(burgerBuilderActions.purchaseInit())}
+        purchaseInitHandler: ()=>{dispatch(burgerBuilderActions.purchaseInit())},
+        onRedirectHandler: (path)=>dispatch(burgerBuilderActions.authRedirect(path))
     }
 }
 

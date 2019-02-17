@@ -22,18 +22,15 @@ export const purchaseStart = ()=>{
     }
 }
 
-export const purchaseHandler = (orderData)=>{
+export const purchaseHandler = (orderData, token)=>{
     return dispatch=>{
         dispatch(purchaseStart());
-        Axios.post('/orders.json', orderData)
+        Axios.post('/orders.json?auth='+token, orderData)
             .then(res=> {
-                // this.setState({ loading:false })
-                // this.props.history.push('/');
-                console.log(res.data);
+                // console.log(res.data);
                 dispatch(purchaseBurgerSuccess(res.data.name, orderData));
             })
             .catch(err=> {
-                // this.setState({ loading:false })
                 dispatch(purchaseBurgerFail(err));
             });
     }
@@ -64,10 +61,11 @@ export const fetchFail= ()=>{
     }
 }
 
-export const orderFetch = ()=>{
+export const orderFetch = (token, userId)=>{
     return dispatch=>{
         dispatch(fetchStart());
-        Axios.get('/orders.json')
+        const queryParams = '?auth='+token+'&orderBy="userId"&equalTo="'+userId+'"';
+        Axios.get('/orders.json'+queryParams)
             .then(res=>{
                 const fetchedOrders=[];
                 for(let key in res.data){
@@ -76,12 +74,9 @@ export const orderFetch = ()=>{
                         id: key
                     })
                 }
-                console.log(fetchedOrders);
                 dispatch(fetchSuccess(fetchedOrders));
-                // this.setState({ fetchedOrders: fetchedOrders, loading: false })
             })
             .catch(err=>{
-                // this.setState({ loading: false })
                 dispatch(fetchFail())
             })
     }

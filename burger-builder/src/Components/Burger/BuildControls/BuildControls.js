@@ -14,15 +14,15 @@ const buildControls =(props)=>(
     <p><strong>Current Price: {props.price.toFixed(2)}</strong></p>
         {controls.map(ctrl=>(
             <BuildControl
-             key={ctrl.label}
-             label={ctrl.label}
-             addIngredient ={()=>props.addIngredient(ctrl.type)}
-             removeIngredient={()=>props.removeIngredient(ctrl.type)} 
-             disabled={props.disabledInfo[ctrl.type]} / >
+            key={ctrl.label}
+            label={ctrl.label}
+            addIngredient ={()=>props.addIngredient(ctrl.type)}
+            removeIngredient={()=>props.removeIngredient(ctrl.type)}
+            disabled={props.disabledInfo[ctrl.type]} / >
         ))}
         <button className={classes.OrderButton}
-         disabled={!props.purchasable}
-         onClick={props.purchasing} >Order Now!</button>
+        disabled={!props.purchasable}
+        onClick={props.purchasing} >{props.isAuth?'ORDER NOW':'SIGN UP TO ORDER'}</button>
     </div>
 )
 

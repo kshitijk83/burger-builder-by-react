@@ -99,13 +99,13 @@ class ContactData extends Component{
         for(var formDataIdentifier in this.state.orderForm){
             formData[formDataIdentifier]= this.state.orderForm[formDataIdentifier].value;
         }
-        // this.setState({ loading: true })
         const order ={
             ingredients: this.props.ingredients,
             price: this.props.tp,
-            orderData: formData
+            orderData: formData,
+            userId: this.props.userId
         }
-        this.props.orderHand(order);
+        this.props.orderHand(order, this.props.token);
     }
 
     checkValidity=(value ,rules)=>{
@@ -196,13 +196,15 @@ const mapStateToProps = state=>{
     return{
         ingredients: state.burgerBuilder.ingredients,
         tp: state.burgerBuilder.total_price,
-        loading: state.order.loading
+        loading: state.order.loading,
+        userId: state.auth.userId,
+        token: state.auth.token
     }
 }
 
 const dispatchToProps = dispatch=>{
     return{
-        orderHand: (orderData)=>dispatch(orderActions.purchaseHandler(orderData))
+        orderHand: (orderData, token)=>dispatch(orderActions.purchaseHandler(orderData, token))
     }
 }
 
